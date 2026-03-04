@@ -16,7 +16,7 @@ services:
           property: connectionString
 
   # Frontend Web (React + Vite)
-  - type: static
+  - type: web
     name: sentira-frontend
     env: static
     rootDir: frontend
