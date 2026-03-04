@@ -16,9 +16,8 @@ services:
           property: connectionString
 
   # Frontend Web (React + Vite)
-  - type: web
+  - type: static
     name: sentira-frontend
-    env: static
     rootDir: frontend
     buildCommand: "npm install && npm run build"
     publishPath: dist
