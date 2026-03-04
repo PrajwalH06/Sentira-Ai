@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_BASE = '/api';
+// Use external URL if provided (for Render and other hosting platforms), else fallback to local proxy
+const API_BASE = import.meta.env.VITE_API_URL
+    ? `${import.meta.env.VITE_API_URL}/api`
+    : '/api';
 
 const api = axios.create({
     baseURL: API_BASE,

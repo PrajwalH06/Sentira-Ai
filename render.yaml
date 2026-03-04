@@ -1,0 +1,32 @@
+services:
+  # Backend API (Python FastAPI)
+  - type: web
+    name: sentira-api
+    plan: free
+    env: python
+    rootDir: backend
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.x
+
+  # Frontend Web (React + Vite)
+  - type: static
+    name: sentira-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: "npm install && npm run build"
+    publishPath: dist
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: sentira-api
+          envVarKey: RENDER_EXTERNAL_URL
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
