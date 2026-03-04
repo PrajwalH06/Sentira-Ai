@@ -1,0 +1,39 @@
+==============================================================================================================
+  SENTIRA AI — Comprehensive Model Test Suite
+==============================================================================================================
+
+#    Status   Description                         Expected     Got          Conf     Urgency    Cat         
+--------------------------------------------------------------------------------------------------------------
+1    PASS     Clear positive                      positive     positive     84.20%   low        UI/UX       
+2    PASS     Clear positive                      positive     positive     84.35%   low        Pricing     
+3    PASS     Positive review                     positive     positive     82.28%   low        Pricing     
+4    PASS     Clear negative                      negative     negative     95.97%   high       Bugs        
+5    PASS     Clear negative                      negative     negative     83.57%   critical   Support     
+6    FAIL     Urgent negative                     negative     positive     66.86%   low        Bugs        
+7    PASS     Clear neutral                       neutral      neutral      94.64%   low        UI/UX       
+8    PASS     Clear neutral                       neutral      neutral      93.00%   low        Pricing     
+9    PASS     Sarcasm: oh great + crash           negative     negative     89.33%   low        Bugs        
+10   PASS     Sarcasm: wow + crash                negative     negative     93.59%   critical   Bugs        
+11   PASS     Sarcasm: totally love + slow        negative     negative     91.23%   low        Support     
+12   PASS     Sarcasm: oh wonderful + broke       negative     negative     93.24%   low        Performance 
+13   PASS     Sarcasm: impressed + crashes        negative     negative     90.51%   high       Bugs        
+14   PASS     Sarcasm: thanks + breaking          negative     negative     89.37%   medium     Features    
+15   PASS     Sarcasm: new record + crashed       negative     negative     88.59%   medium     Bugs        
+16   PASS     Sarcasm: great + paint dry          negative     negative     89.59%   low        Performance 
+17   PASS     Sarcasm: brilliant + froze          negative     negative     87.00%   high       Performance 
+18   PASS     Sarcasm: surprisingly consistent    negative     negative     91.30%   high       UI/UX       
+19   PASS     Critical urgency                    negative     negative     94.17%   critical   Bugs        
+20   PASS     High urgency                        negative     negative     64.63%   high       Support     
+21   SKIP     Low urgency                         any          negative     62.55%   low        Support     
+22   SKIP     Low urgency                         any          positive     51.51%   low        UI/UX       
+23   SKIP     Mixed sentiment                     any          negative     48.89%   low        Support     
+24   PASS     Double negative neutral             neutral      neutral      94.51%   low        Pricing     
+25   SKIP     Negation edge case                  any          neutral      82.90%   low        Pricing     
+26   PASS     Soft neutral                        neutral      neutral      93.15%   medium     UI/UX       
+--------------------------------------------------------------------------------------------------------------
+
+  Results: 21 passed, 1 failed, 4 skipped out of 26 tests
+  Pass rate: 21/22 = 95.5%
+
+  Sarcasm detection: 10/10 correct
+==============================================================================================================

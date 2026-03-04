@@ -1,0 +1,116 @@
+{
+  "model_name": "category_model",
+  "cv_accuracy_mean": 0.9995,
+  "cv_accuracy_std": 0.001,
+  "n_samples": 2100,
+  "n_classes": 6,
+  "classes": [
+    "Bugs",
+    "Features",
+    "Performance",
+    "Pricing",
+    "Support",
+    "UI/UX"
+  ],
+  "classification_report": {
+    "Bugs": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 350.0
+    },
+    "Features": {
+      "precision": 0.9971509971509972,
+      "recall": 1.0,
+      "f1-score": 0.9985734664764622,
+      "support": 350.0
+    },
+    "Performance": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 350.0
+    },
+    "Pricing": {
+      "precision": 1.0,
+      "recall": 0.9971428571428571,
+      "f1-score": 0.9985693848354793,
+      "support": 350.0
+    },
+    "Support": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 350.0
+    },
+    "UI/UX": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 350.0
+    },
+    "accuracy": 0.9995238095238095,
+    "macro avg": {
+      "precision": 0.999525166191833,
+      "recall": 0.9995238095238096,
+      "f1-score": 0.9995238085519903,
+      "support": 2100.0
+    },
+    "weighted avg": {
+      "precision": 0.9995251661918328,
+      "recall": 0.9995238095238095,
+      "f1-score": 0.9995238085519902,
+      "support": 2100.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      350,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      350,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      350,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      349,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      350,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      350
+    ]
+  ]
+}

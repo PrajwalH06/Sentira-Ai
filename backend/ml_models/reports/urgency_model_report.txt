@@ -1,0 +1,23 @@
+============================================================
+URGENCY_MODEL — Classification Report
+============================================================
+
+CV Accuracy: 1.0000 (+/- 0.0000)
+Samples: 1330 | Classes: 4
+
+              precision    recall  f1-score   support
+
+    critical       1.00      1.00      1.00       245
+        high       1.00      1.00      1.00       315
+         low       1.00      1.00      1.00       455
+      medium       1.00      1.00      1.00       315
+
+    accuracy                           1.00      1330
+   macro avg       1.00      1.00      1.00      1330
+weighted avg       1.00      1.00      1.00      1330
+
+Confusion Matrix:
+[[245   0   0   0]
+ [  0 315   0   0]
+ [  0   0 455   0]
+ [  0   0   0 315]]

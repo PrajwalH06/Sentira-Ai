@@ -1,0 +1,26 @@
+======================================================================
+  SENTIRA AI — PROFESSIONAL MODEL TRAINING SUMMARY
+  Generated: 2026-03-04 22:46:16
+======================================================================
+
+Model                  Samples    Classes    CV Accuracy          Vocab
+----------------------------------------------------------------------
+sentiment_model        1932       3          99.95% +/-0.10%
+category_model         2100       6          99.95% +/-0.10%
+urgency_model          1330       4          100.00% +/-0.00%
+
+======================================================================
+  TECHNOLOGY STACK
+======================================================================
+  - Feature Extraction : TF-IDF (Word n-grams + Character n-grams)
+  - Classifiers        : LinearSVC + LogReg + MultinomialNB + ComplementNB
+  - Ensemble           : Soft Voting Classifier (weighted)
+  - Pipeline           : sklearn FeatureUnion + Pipeline
+  - Preprocessing      : Contraction expansion, negation tagging,
+                         emoji conversion, sarcasm marker detection
+  - Augmentation       : Synonym replacement, word dropout, word swap,
+                         prefix/suffix, case variation (6x factor)
+  - Serialization      : joblib (binary model files)
+  - Validation         : 5-Fold Stratified Cross-Validation
+
+  All models are self-hosted with zero external AI API dependencies.

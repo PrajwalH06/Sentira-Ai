@@ -1,0 +1,78 @@
+{
+  "model_name": "urgency_model",
+  "cv_accuracy_mean": 1.0,
+  "cv_accuracy_std": 0.0,
+  "n_samples": 1330,
+  "n_classes": 4,
+  "classes": [
+    "critical",
+    "high",
+    "low",
+    "medium"
+  ],
+  "classification_report": {
+    "critical": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 245.0
+    },
+    "high": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 315.0
+    },
+    "low": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 455.0
+    },
+    "medium": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 315.0
+    },
+    "accuracy": 1.0,
+    "macro avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1330.0
+    },
+    "weighted avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1330.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      245,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      315,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      455,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      315
+    ]
+  ]
+}
