@@ -8,3 +8,5 @@ joblib
 pandas
 numpy
 pydantic
+asyncpg
+psycopg2-binary
