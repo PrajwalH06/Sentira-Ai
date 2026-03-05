@@ -185,6 +185,16 @@ async def correct_feedback(feedback_id: int, correction: FeedbackCorrection, db:
     feedback.urgency_confidence = 1.0
     feedback.is_corrected = True
     
+    # Store additional labels as secondary JSON
+    if correction.additional_sentiments:
+        feedback.secondary_sentiments = json.dumps(
+            [{"label": s, "confidence": 1.0} for s in correction.additional_sentiments]
+        )
+    if correction.additional_categories:
+        feedback.secondary_categories = json.dumps(
+            [{"label": c, "confidence": 1.0} for c in correction.additional_categories]
+        )
+    
     await db.commit()
     await db.refresh(feedback)
     

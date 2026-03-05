@@ -24,6 +24,8 @@ class FeedbackCorrection(BaseModel):
     sentiment: str
     category: str
     urgency: str
+    additional_sentiments: Optional[List[str]] = None
+    additional_categories: Optional[List[str]] = None
 
 
 # ── Responses ──
