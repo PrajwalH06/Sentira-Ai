@@ -3,6 +3,7 @@ services:
   - type: web
     name: sentira-backend
     env: python
+    plan: free
     rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
@@ -11,8 +12,9 @@ services:
         value: 3.10.0 # Standardize Python version for Render
 
   # Frontend Static Site (Vite/React)
-  - type: static_site
+  - type: web
     name: sentira-frontend
+    env: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
