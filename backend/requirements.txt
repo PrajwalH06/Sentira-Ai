@@ -3,7 +3,7 @@ uvicorn[standard]
 sqlalchemy
 aiosqlite
 python-multipart
-scikit-learn==1.8.0
+scikit-learn
 joblib
 pandas
 numpy
