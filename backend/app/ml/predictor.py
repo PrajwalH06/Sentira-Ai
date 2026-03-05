@@ -139,6 +139,16 @@ def load_models():
     print("✅ All ML models loaded successfully!")
 
 
+def get_top_predictions(model, text_input, top_n=3, threshold=0.15):
+    """Extract top N class predictions above a confidence threshold."""
+    proba = model.predict_proba(text_input)[0]
+    classes = list(model.classes_)
+    # Pair classes with their probabilities and sort descending
+    pairs = sorted(zip(classes, proba), key=lambda x: x[1], reverse=True)
+    # Return top N above threshold
+    return [{"label": label, "confidence": round(float(conf), 4)} for label, conf in pairs[:top_n] if conf >= threshold]
+
+
 def add_correction(original_text: str, sentiment: str, category: str, urgency: str):
     """Add a human correction to the active memory cache."""
     cleaned = preprocess_text(original_text)
@@ -222,6 +232,13 @@ def predict(text: str) -> dict:
                         med_idx = list(_urgency_model.classes_).index("medium")
                         urgency_conf = float(urgency_proba[med_idx])
 
+    # Get secondary predictions (all classes above threshold, excluding primary)
+    all_sentiments = get_top_predictions(_sentiment_model, text_input)
+    all_categories = get_top_predictions(_category_model, text_input)
+    
+    secondary_sentiments = [s for s in all_sentiments if s["label"] != sentiment_pred]
+    secondary_categories = [c for c in all_categories if c["label"] != category_pred]
+
     return {
         "sentiment": sentiment_pred,
         "sentiment_confidence": round(sentiment_conf, 4),
@@ -229,6 +246,8 @@ def predict(text: str) -> dict:
         "category_confidence": round(category_conf, 4),
         "urgency": urgency_pred,
         "urgency_confidence": round(urgency_conf, 4),
+        "secondary_sentiments": secondary_sentiments,
+        "secondary_categories": secondary_categories,
     }
 
 

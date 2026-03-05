@@ -3,6 +3,7 @@ Feedback API router – submit, list, filter feedback.
 """
 import io
 import csv
+import json
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -16,6 +17,26 @@ from app.schemas import FeedbackCreate, FeedbackResponse, PredictionResult, Feed
 from app.ml.predictor import predict, add_correction
 
 router = APIRouter(prefix="/api/feedback", tags=["Feedback"])
+
+
+def _serialize_feedback(fb: Feedback) -> dict:
+    """Convert a Feedback ORM object to a dict with parsed JSON fields."""
+    data = {
+        "id": fb.id,
+        "text": fb.text,
+        "sentiment": fb.sentiment,
+        "sentiment_confidence": fb.sentiment_confidence,
+        "category": fb.category,
+        "category_confidence": fb.category_confidence,
+        "urgency": fb.urgency,
+        "urgency_confidence": fb.urgency_confidence,
+        "source": fb.source,
+        "is_corrected": fb.is_corrected,
+        "created_at": fb.created_at,
+        "secondary_sentiments": json.loads(fb.secondary_sentiments) if fb.secondary_sentiments else [],
+        "secondary_categories": json.loads(fb.secondary_categories) if fb.secondary_categories else [],
+    }
+    return data
 
 
 @router.post("/", response_model=FeedbackResponse)
@@ -38,12 +59,14 @@ async def submit_feedback(data: FeedbackCreate, db: AsyncSession = Depends(get_d
         urgency_confidence=result["urgency_confidence"],
         source=data.source or "manual",
         is_corrected=False,
+        secondary_sentiments=json.dumps(result.get("secondary_sentiments", [])),
+        secondary_categories=json.dumps(result.get("secondary_categories", [])),
     )
     db.add(feedback)
     await db.commit()
     await db.refresh(feedback)
 
-    return feedback
+    return _serialize_feedback(feedback)
 
 
 @router.post("/csv", response_model=list[FeedbackResponse])
@@ -86,6 +109,8 @@ async def upload_csv(file: UploadFile = File(...), db: AsyncSession = Depends(ge
             urgency_confidence=prediction["urgency_confidence"],
             source="csv",
             is_corrected=False,
+            secondary_sentiments=json.dumps(prediction.get("secondary_sentiments", [])),
+            secondary_categories=json.dumps(prediction.get("secondary_categories", [])),
         )
         db.add(feedback)
         results.append(feedback)
@@ -94,7 +119,7 @@ async def upload_csv(file: UploadFile = File(...), db: AsyncSession = Depends(ge
     for fb in results:
         await db.refresh(fb)
 
-    return results
+    return [_serialize_feedback(fb) for fb in results]
 
 
 @router.get("/", response_model=list[FeedbackResponse])
@@ -124,7 +149,7 @@ async def list_feedbacks(
 
     query = query.limit(limit).offset(offset)
     result = await db.execute(query)
-    return result.scalars().all()
+    return [_serialize_feedback(fb) for fb in result.scalars().all()]
 
 
 @router.get("/count")
@@ -141,7 +166,7 @@ async def get_feedback(feedback_id: int, db: AsyncSession = Depends(get_db)):
     feedback = result.scalar_one_or_none()
     if not feedback:
         raise HTTPException(status_code=404, detail="Feedback not found")
-    return feedback
+    return _serialize_feedback(feedback)
 
 
 @router.put("/{feedback_id}/correct", response_model=FeedbackResponse)
@@ -166,7 +191,7 @@ async def correct_feedback(feedback_id: int, correction: FeedbackCorrection, db:
     # Instantly update memory cache in predictor for self-learning
     add_correction(feedback.text, correction.sentiment, correction.category, correction.urgency)
     
-    return feedback
+    return _serialize_feedback(feedback)
 
 
 @router.post("/analyze", response_model=PredictionResult)

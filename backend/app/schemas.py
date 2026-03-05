@@ -38,6 +38,8 @@ class FeedbackResponse(BaseModel):
     urgency_confidence: float
     source: str
     is_corrected: bool = False
+    secondary_sentiments: Optional[List[dict]] = None
+    secondary_categories: Optional[List[dict]] = None
     created_at: datetime
 
     class Config:
@@ -51,6 +53,8 @@ class PredictionResult(BaseModel):
     category_confidence: float
     urgency: str
     urgency_confidence: float
+    secondary_sentiments: Optional[List[dict]] = None
+    secondary_categories: Optional[List[dict]] = None
 
 
 class AnalyticsOverview(BaseModel):

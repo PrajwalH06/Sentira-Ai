@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Filter, RefreshCw, PenSquare, X, Check, BrainCircuit } from 'lucide-react';
+import { Search, RefreshCw, PenSquare, X, Check, BrainCircuit, ChevronDown, ChevronUp } from 'lucide-react';
 import { getFeedbacks, correctFeedback } from '../api';
 
 export default function FeedbackList() {
@@ -7,6 +7,7 @@ export default function FeedbackList() {
     const [loading, setLoading] = useState(true);
     const [filters, setFilters] = useState({ sentiment: '', category: '', urgency: '' });
     const [search, setSearch] = useState('');
+    const [expandedRows, setExpandedRows] = useState(new Set());
 
     // Correction Modal State
     const [editingFeedback, setEditingFeedback] = useState(null);
@@ -36,6 +37,15 @@ export default function FeedbackList() {
         } finally {
             setSaving(false);
         }
+    };
+
+    const toggleExpand = (id) => {
+        setExpandedRows(prev => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
+        });
     };
 
     const filtered = feedbacks.filter((fb) => fb.text.toLowerCase().includes(search.toLowerCase()));
@@ -93,33 +103,61 @@ export default function FeedbackList() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filtered.map((fb) => (
-                                    <tr key={fb.id}>
-                                        <td style={{ color: 'var(--text-muted)', textAlign: 'center', fontSize: '0.8rem' }}>#{fb.id}</td>
-                                        <td style={{ maxWidth: 400, color: 'var(--text-primary)' }}>
-                                            <div style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                                                {fb.is_corrected && (
-                                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: 'var(--success)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', marginRight: 8, background: 'rgba(16, 185, 129, 0.1)', padding: '2px 6px', borderRadius: 4 }}>
-                                                        <Check size={10} /> Human Verified
+                                {filtered.map((fb) => {
+                                    const isExpanded = expandedRows.has(fb.id);
+                                    const isLong = fb.text.length > 120;
+                                    return (
+                                        <tr key={fb.id}>
+                                            <td style={{ color: 'var(--text-muted)', textAlign: 'center', fontSize: '0.8rem', verticalAlign: 'top', paddingTop: 18 }}>#{fb.id}</td>
+                                            <td style={{ maxWidth: 500, color: 'var(--text-primary)' }}>
+                                                <div>
+                                                    {fb.is_corrected && (
+                                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: 'var(--success)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', marginRight: 8, background: 'rgba(16, 185, 129, 0.1)', padding: '2px 6px', borderRadius: 4 }}>
+                                                            <Check size={10} /> Human Verified
+                                                        </span>
+                                                    )}
+                                                    <span style={!isExpanded && isLong ? { display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' } : {}}>
+                                                        {fb.text}
                                                     </span>
-                                                )}
-                                                {fb.text}
-                                            </div>
-                                        </td>
-                                        <td><span className={`badge badge-${fb.sentiment}`}>{fb.sentiment}</span></td>
-                                        <td><span className="badge" style={{ borderColor: 'var(--border)' }}>{fb.category}</span></td>
-                                        <td><span className={`badge badge-${fb.urgency}`}>{fb.urgency}</span></td>
-                                        <td style={{ textAlign: 'right' }}>
-                                            <button
-                                                onClick={() => { setEditingFeedback(fb); setCorrection({ sentiment: fb.sentiment, category: fb.category, urgency: fb.urgency }); }}
-                                                className="btn-secondary"
-                                                style={{ padding: '6px 12px', fontSize: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: 6, opacity: fb.is_corrected ? 0.5 : 1 }}
-                                            >
-                                                <BrainCircuit size={14} /> Correct AI
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
+                                                    {isLong && (
+                                                        <button
+                                                            onClick={() => toggleExpand(fb.id)}
+                                                            style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 4 }}
+                                                        >
+                                                            {isExpanded ? <><ChevronUp size={12} /> Show less</> : <><ChevronDown size={12} /> Show more</>}
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td style={{ verticalAlign: 'top', paddingTop: 18 }}>
+                                                <span className={`badge badge-${fb.sentiment}`}>{fb.sentiment}</span>
+                                                {fb.secondary_sentiments?.map((s, i) => (
+                                                    <span key={i} className={`badge badge-${s.label}`} style={{ opacity: 0.5, marginLeft: 4, fontSize: '0.6rem' }}>
+                                                        {s.label} {(s.confidence * 100).toFixed(0)}%
+                                                    </span>
+                                                ))}
+                                            </td>
+                                            <td style={{ verticalAlign: 'top', paddingTop: 18 }}>
+                                                <span className="badge" style={{ borderColor: 'var(--border)' }}>{fb.category}</span>
+                                                {fb.secondary_categories?.map((c, i) => (
+                                                    <span key={i} className="badge" style={{ opacity: 0.5, marginLeft: 4, fontSize: '0.6rem', borderColor: 'var(--border)' }}>
+                                                        {c.label} {(c.confidence * 100).toFixed(0)}%
+                                                    </span>
+                                                ))}
+                                            </td>
+                                            <td style={{ verticalAlign: 'top', paddingTop: 18 }}><span className={`badge badge-${fb.urgency}`}>{fb.urgency}</span></td>
+                                            <td style={{ textAlign: 'right', verticalAlign: 'top', paddingTop: 14 }}>
+                                                <button
+                                                    onClick={() => { setEditingFeedback(fb); setCorrection({ sentiment: fb.sentiment, category: fb.category, urgency: fb.urgency }); }}
+                                                    className="btn-secondary"
+                                                    style={{ padding: '6px 12px', fontSize: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: 6, opacity: fb.is_corrected ? 0.5 : 1 }}
+                                                >
+                                                    <BrainCircuit size={14} /> Correct AI
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>
@@ -132,12 +170,12 @@ export default function FeedbackList() {
                     <div className="glass-panel" style={{ width: '100%', maxWidth: 500, padding: 32, animation: 'fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
                             <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                                <PenSquare size={20} color="var(--primary-light)" /> Tune AI Logic
+                                <PenSquare size={20} color="var(--primary)" /> Tune AI Logic
                             </h2>
                             <button onClick={() => setEditingFeedback(null)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}><X size={20} /></button>
                         </div>
 
-                        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: 24, fontStyle: 'italic', padding: 16, background: 'rgba(255,255,255,0.03)', borderRadius: 8, borderLeft: '2px solid var(--primary)' }}>
+                        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: 24, fontStyle: 'italic', padding: 16, background: 'rgba(255,255,255,0.03)', borderRadius: 8, borderLeft: '2px solid var(--primary)', maxHeight: 200, overflowY: 'auto' }}>
                             "{editingFeedback.text}"
                         </p>
 

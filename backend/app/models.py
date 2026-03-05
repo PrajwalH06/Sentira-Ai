@@ -19,4 +19,6 @@ class Feedback(Base):
     urgency_confidence = Column(Float, default=0.0)
     source = Column(String(50), default="manual")            # manual, csv, api
     is_corrected = Column(Boolean, default=False)            # For self-learning AI overrides
+    secondary_sentiments = Column(Text, nullable=True)       # JSON string of [{label, confidence}]
+    secondary_categories = Column(Text, nullable=True)       # JSON string of [{label, confidence}]
     created_at = Column(DateTime(timezone=True), server_default=func.now())

@@ -130,13 +130,31 @@ export default function SubmitFeedback() {
                     {(preview || result) && (
                         <div className="glass-panel" style={{ padding: 24, background: result ? 'rgba(16, 185, 129, 0.05)' : undefined, borderColor: result ? 'rgba(16, 185, 129, 0.2)' : undefined }}>
                             <h3 style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
-                                <Sparkles size={14} color={result ? "var(--success)" : "var(--accent-light)"} />
+                                <Sparkles size={14} color={result ? "var(--success)" : "var(--accent)"} />
                                 {result ? "Final Analysis" : "Live Prediction"}
                             </h3>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                                 <PredictionRow label="Sentiment" value={(result || preview).sentiment} confidence={(result || preview).sentiment_confidence} />
+                                {(result || preview).secondary_sentiments?.length > 0 && (
+                                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: -8, paddingLeft: 8 }}>
+                                        {(result || preview).secondary_sentiments.map((s, i) => (
+                                            <span key={i} style={{ fontSize: '0.7rem', color: 'var(--text-muted)', opacity: 0.7, background: 'rgba(255,255,255,0.03)', padding: '2px 8px', borderRadius: 4 }}>
+                                                Also: {s.label} ({(s.confidence * 100).toFixed(0)}%)
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
                                 <PredictionRow label="Category" value={(result || preview).category} confidence={(result || preview).category_confidence} />
+                                {(result || preview).secondary_categories?.length > 0 && (
+                                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: -8, paddingLeft: 8 }}>
+                                        {(result || preview).secondary_categories.map((c, i) => (
+                                            <span key={i} style={{ fontSize: '0.7rem', color: 'var(--text-muted)', opacity: 0.7, background: 'rgba(255,255,255,0.03)', padding: '2px 8px', borderRadius: 4 }}>
+                                                Also: {c.label} ({(c.confidence * 100).toFixed(0)}%)
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
                                 <PredictionRow label="Urgency" value={(result || preview).urgency} confidence={(result || preview).urgency_confidence} />
                             </div>
                         </div>
